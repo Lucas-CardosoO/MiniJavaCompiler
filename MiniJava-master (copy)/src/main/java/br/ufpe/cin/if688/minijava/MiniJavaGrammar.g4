@@ -33,40 +33,44 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 grammar MiniJavaGrammar;
 
 
-goal:;
+goal: mainClass(classDeclaration)* EOF;
+
+mainClass: 'class' identifier '{' 'public' 'static' 'void' 'main' LP 'String' '[' ']' identifier RP '{' statement '}' '}';
+
+classDeclaration: 'class' identifier ('extends' identifier)? '{'(varDeclaration)* (methodDeclaration)* '}';
 
 varDeclaration: type identifier SEMICOLON;
 
-methodDeclaration: 'public' type identifier LP (type identifier (COMMA type identifier)*)? RP '{' (varDeclaration)* (statement)* 'return' expresion SEMICOLON '}';
+methodDeclaration: 'public' type identifier LP (type identifier (COMMA type identifier)*)? RP '{' (varDeclaration)* (statement)* 'return' expression SEMICOLON '}';
 
-type: INT LSB RSB
+type: 'int' LSB RSB
     | 'boolean'
-    | INT
+    | 'int'
     | identifier;
 
 statement: '{' (statement)* '}'
-    | 'if' LP expresion RP statement 'else' statement
-    | 'while' LP expresion RP statement
-    | 'System.out.println' LP expresion RP SEMICOLON
-    | identifier EQ expresion SEMICOLON
-    | identifier RSB expresion LSB EQ expresion SEMICOLON;
+    | 'if' LP expression RP statement 'else' statement
+    | 'while' LP expression RP statement
+    | 'System.out.println' LP expression RP SEMICOLON
+    | identifier EQ expression SEMICOLON
+    | identifier '[' expression ']' EQ expression SEMICOLON;
 
 
-expresion: expresion (AND | LT | PLUS | MINUS | TIMES) expresion
-    | LSB expresion RSB
-    | expresion DOTLENGTH
-    | expresion DOT identifier LP (expresion (COMMA expresion)*)? RP
+expression: expression (AND | LT | PLUS | MINUS | TIMES) expression
+    | expression LSB expression RSB
+    | expression DOTLENGTH
+    | expression DOT identifier LP (expression (COMMA expression)*)? RP
     | MINUS? INTEGER
     | TRUE
     | FALSE
     | identifier
     | THIS
-    | NEW INT LSB expresion RSB
-    | NEW identifier LP RP
-    | NOT expresion
-    | LP expresion RP;
+    | 'new' 'int' LSB expression RSB
+    | 'new' identifier LP RP
+    | NOT expression
+    | LP expression RP;
 
-identifier: VALID_ID_START VALID_ID_CHAR*;
+identifier: (VALID_ID_START (VALID_ID_START|INTEGER)*) | 'Print' | 'new_node' ;
 
 
 AND:'&&';
@@ -90,14 +94,8 @@ TRUE: 'true';
 FALSE: 'false';
 INTEGER: ('0' .. '9')+;
 THIS: 'this';
-NEW: 'new';
-INT: 'int';
 
-
-fragment VALID_ID_START: ('a' .. 'z') | ('A' .. 'Z') | '_';
-
-
-fragment VALID_ID_CHAR: VALID_ID_START | ('0' .. '9');
+VALID_ID_START: ('a' .. 'z') | ('A' .. 'Z') | '_';
 
 WS:   [ \r\t\n]+ -> skip;
 MULTILINE_COMMENT:  '/*' .*? '*/' -> skip;
