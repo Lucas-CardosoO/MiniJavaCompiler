@@ -11,11 +11,47 @@ import org.antlr.v4.runtime.tree.ParseTreeVisitor;
  */
 public interface MiniJavaGrammarVisitor<T> extends ParseTreeVisitor<T> {
 	/**
-	 * Visit a parse tree produced by {@link MiniJavaGrammarParser#equation}.
+	 * Visit a parse tree produced by {@link MiniJavaGrammarParser#goal}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitEquation(MiniJavaGrammarParser.EquationContext ctx);
+	T visitGoal(MiniJavaGrammarParser.GoalContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link MiniJavaGrammarParser#mainClass}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitMainClass(MiniJavaGrammarParser.MainClassContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link MiniJavaGrammarParser#classDeclaration}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitClassDeclaration(MiniJavaGrammarParser.ClassDeclarationContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link MiniJavaGrammarParser#varDeclaration}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitVarDeclaration(MiniJavaGrammarParser.VarDeclarationContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link MiniJavaGrammarParser#methodDeclaration}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitMethodDeclaration(MiniJavaGrammarParser.MethodDeclarationContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link MiniJavaGrammarParser#type}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitType(MiniJavaGrammarParser.TypeContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link MiniJavaGrammarParser#statement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitStatement(MiniJavaGrammarParser.StatementContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link MiniJavaGrammarParser#expression}.
 	 * @param ctx the parse tree
@@ -23,45 +59,9 @@ public interface MiniJavaGrammarVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitExpression(MiniJavaGrammarParser.ExpressionContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link MiniJavaGrammarParser#term}.
+	 * Visit a parse tree produced by {@link MiniJavaGrammarParser#id}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitTerm(MiniJavaGrammarParser.TermContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link MiniJavaGrammarParser#factor}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitFactor(MiniJavaGrammarParser.FactorContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link MiniJavaGrammarParser#signedAtom}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitSignedAtom(MiniJavaGrammarParser.SignedAtomContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link MiniJavaGrammarParser#atom}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitAtom(MiniJavaGrammarParser.AtomContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link MiniJavaGrammarParser#scientific}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitScientific(MiniJavaGrammarParser.ScientificContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link MiniJavaGrammarParser#variable}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitVariable(MiniJavaGrammarParser.VariableContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link MiniJavaGrammarParser#relop}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitRelop(MiniJavaGrammarParser.RelopContext ctx);
+	T visitId(MiniJavaGrammarParser.IdContext ctx);
 }
