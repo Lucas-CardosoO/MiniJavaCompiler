@@ -1,5 +1,5 @@
 // Generated from /home/CIN/lccao/Desktop/MiniJavaCompiler/MiniJava-master (copy)/src/main/java/br/ufpe/cin/if688/minijava/MiniJavaGrammar.g4 by ANTLR 4.7.2
-package gen.br.ufpe.cin.if688.minijava;
+package br.ufpe.cin.if688.minijava.antlr;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
@@ -16,13 +16,13 @@ public class MiniJavaGrammarBaseListener implements MiniJavaGrammarListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterGoal(MiniJavaGrammarParser.GoalContext ctx) { }
+	@Override public void enterProgram(MiniJavaGrammarParser.ProgramContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitGoal(MiniJavaGrammarParser.GoalContext ctx) { }
+	@Override public void exitProgram(MiniJavaGrammarParser.ProgramContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

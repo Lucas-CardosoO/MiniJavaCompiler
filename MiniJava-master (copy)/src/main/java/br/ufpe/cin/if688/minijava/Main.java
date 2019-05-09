@@ -1,24 +1,39 @@
 package br.ufpe.cin.if688.minijava;
 
-import gen.br.ufpe.cin.if688.minijava.*;
+import br.ufpe.cin.if688.minijava.antlr.MiniJavaGrammarLexer;
+import br.ufpe.cin.if688.minijava.antlr.MiniJavaGrammarParser;
+import br.ufpe.cin.if688.minijava.ast.Program;
 import org.antlr.v4.runtime.CommonTokenStream;
-import org.antlr.v4.runtime.TokenSource;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
-import org.antlr.v4.runtime.TokenStream;
-
+import br.ufpe.cin.if688.minijava.visitor.*;
 import java.io.IOException;
 
 public class Main {
 
-    public static void main (String[] args) throws IOException {
-        CharStream charstream = CharStreams.fromFileName("/home/CIN/lccao/Desktop/MiniJavaCompiler/MiniJava-master (copy)/src/main/java/br/ufpe/cin/if688/minijava/test.txt");
-        MiniJavaGrammarLexer lexer = new MiniJavaGrammarLexer(charstream);
-        CommonTokenStream cts = new CommonTokenStream(lexer);
-        MiniJavaGrammarParser parser = new MiniJavaGrammarParser (cts);
-        parser.goal();
+//    public static void main (String[] args) throws IOException {
+//        CharStream charstream = CharStreams.fromFileName("/home/CIN/lccao/Desktop/MiniJavaCompiler/MiniJava-master (copy)/src/main/java/br/ufpe/cin/if688/minijava/test.txt");
+//        MiniJavaGrammarLexer lexer = new MiniJavaGrammarLexer(charstream);
+//        CommonTokenStream cts = new CommonTokenStream(lexer);
+//        MiniJavaGrammarParser parser = new MiniJavaGrammarParser (cts);
+//        parser.goal();
+//
+//    }
 
+    public static void main(String[] args) throws IOException {
+        CharStream charStream = CharStreams.fromStream(System.in);
+        MiniJavaGrammarLexer lexer = new MiniJavaGrammarLexer(charStream);
+
+        CommonTokenStream commonTokenStream = new CommonTokenStream(lexer);
+        MiniJavaGrammarParser parser =  new MiniJavaGrammarParser(commonTokenStream);
+
+        MiniJavaVisitor miniJava = new MiniJavaVisitor();
+        Program program = (Program) miniJava.visit(parser.program());
+
+        PrettyPrintVisitor printVisitor = new PrettyPrintVisitor();
+        printVisitor.visit(program);
     }
+
 
 
 //    public static void main(String[] args) {

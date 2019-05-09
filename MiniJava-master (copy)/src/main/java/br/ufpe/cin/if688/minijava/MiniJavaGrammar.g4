@@ -33,7 +33,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 grammar MiniJavaGrammar;
 
 
-goal: mainClass(classDeclaration)* EOF;
+program: mainClass(classDeclaration)* EOF;
 
 mainClass: 'class' id '{' 'public' 'static' 'void' 'main' LP 'String' '[' ']' id RP '{' statement '}' '}';
 

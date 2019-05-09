@@ -1,5 +1,5 @@
 // Generated from /home/CIN/lccao/Desktop/MiniJavaCompiler/MiniJava-master (copy)/src/main/java/br/ufpe/cin/if688/minijava/MiniJavaGrammar.g4 by ANTLR 4.7.2
-package gen.br.ufpe.cin.if688.minijava;
+package br.ufpe.cin.if688.minijava.antlr;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
 /**
@@ -8,15 +8,15 @@ import org.antlr.v4.runtime.tree.ParseTreeListener;
  */
 public interface MiniJavaGrammarListener extends ParseTreeListener {
 	/**
-	 * Enter a parse tree produced by {@link MiniJavaGrammarParser#goal}.
+	 * Enter a parse tree produced by {@link MiniJavaGrammarParser#program}.
 	 * @param ctx the parse tree
 	 */
-	void enterGoal(MiniJavaGrammarParser.GoalContext ctx);
+	void enterProgram(MiniJavaGrammarParser.ProgramContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link MiniJavaGrammarParser#goal}.
+	 * Exit a parse tree produced by {@link MiniJavaGrammarParser#program}.
 	 * @param ctx the parse tree
 	 */
-	void exitGoal(MiniJavaGrammarParser.GoalContext ctx);
+	void exitProgram(MiniJavaGrammarParser.ProgramContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link MiniJavaGrammarParser#mainClass}.
 	 * @param ctx the parse tree

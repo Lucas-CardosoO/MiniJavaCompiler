@@ -1,5 +1,5 @@
 // Generated from /home/CIN/lccao/Desktop/MiniJavaCompiler/MiniJava-master (copy)/src/main/java/br/ufpe/cin/if688/minijava/MiniJavaGrammar.g4 by ANTLR 4.7.2
-package gen.br.ufpe.cin.if688.minijava;
+package br.ufpe.cin.if688.minijava.antlr;
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
 /**
@@ -11,11 +11,11 @@ import org.antlr.v4.runtime.tree.ParseTreeVisitor;
  */
 public interface MiniJavaGrammarVisitor<T> extends ParseTreeVisitor<T> {
 	/**
-	 * Visit a parse tree produced by {@link MiniJavaGrammarParser#goal}.
+	 * Visit a parse tree produced by {@link MiniJavaGrammarParser#program}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitGoal(MiniJavaGrammarParser.GoalContext ctx);
+	T visitProgram(MiniJavaGrammarParser.ProgramContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link MiniJavaGrammarParser#mainClass}.
 	 * @param ctx the parse tree

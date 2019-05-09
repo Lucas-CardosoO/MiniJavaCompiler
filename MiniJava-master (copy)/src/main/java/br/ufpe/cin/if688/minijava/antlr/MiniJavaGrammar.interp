@@ -89,7 +89,7 @@ MULTILINE_COMMENT
 LINE_COMMENT
 
 rule names:
-goal
+program
 mainClass
 classDeclaration
 varDeclaration

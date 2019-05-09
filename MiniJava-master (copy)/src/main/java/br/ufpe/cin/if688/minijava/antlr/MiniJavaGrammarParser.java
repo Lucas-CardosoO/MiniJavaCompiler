@@ -1,13 +1,10 @@
 // Generated from /home/CIN/lccao/Desktop/MiniJavaCompiler/MiniJava-master (copy)/src/main/java/br/ufpe/cin/if688/minijava/MiniJavaGrammar.g4 by ANTLR 4.7.2
-package gen.br.ufpe.cin.if688.minijava;
+package br.ufpe.cin.if688.minijava.antlr;
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.*;
-import org.antlr.v4.runtime.misc.*;
 import org.antlr.v4.runtime.tree.*;
 import java.util.List;
-import java.util.Iterator;
-import java.util.ArrayList;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast"})
 public class MiniJavaGrammarParser extends Parser {
@@ -24,12 +21,12 @@ public class MiniJavaGrammarParser extends Parser {
 		TRUE=35, FALSE=36, INTEGER=37, THIS=38, VALID_ID_START=39, WS=40, MULTILINE_COMMENT=41, 
 		LINE_COMMENT=42;
 	public static final int
-		RULE_goal = 0, RULE_mainClass = 1, RULE_classDeclaration = 2, RULE_varDeclaration = 3, 
+		RULE_program = 0, RULE_mainClass = 1, RULE_classDeclaration = 2, RULE_varDeclaration = 3, 
 		RULE_methodDeclaration = 4, RULE_type = 5, RULE_statement = 6, RULE_expression = 7, 
 		RULE_id = 8;
 	private static String[] makeRuleNames() {
 		return new String[] {
-			"goal", "mainClass", "classDeclaration", "varDeclaration", "methodDeclaration", 
+			"program", "mainClass", "classDeclaration", "varDeclaration", "methodDeclaration", 
 			"type", "statement", "expression", "id"
 		};
 	}
@@ -105,7 +102,7 @@ public class MiniJavaGrammarParser extends Parser {
 		_interp = new ParserATNSimulator(this,_ATN,_decisionToDFA,_sharedContextCache);
 	}
 
-	public static class GoalContext extends ParserRuleContext {
+	public static class ProgramContext extends ParserRuleContext {
 		public MainClassContext mainClass() {
 			return getRuleContext(MainClassContext.class,0);
 		}
@@ -116,28 +113,28 @@ public class MiniJavaGrammarParser extends Parser {
 		public ClassDeclarationContext classDeclaration(int i) {
 			return getRuleContext(ClassDeclarationContext.class,i);
 		}
-		public GoalContext(ParserRuleContext parent, int invokingState) {
+		public ProgramContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_goal; }
+		@Override public int getRuleIndex() { return RULE_program; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof MiniJavaGrammarListener ) ((MiniJavaGrammarListener)listener).enterGoal(this);
+			if ( listener instanceof MiniJavaGrammarListener ) ((MiniJavaGrammarListener)listener).enterProgram(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof MiniJavaGrammarListener ) ((MiniJavaGrammarListener)listener).exitGoal(this);
+			if ( listener instanceof MiniJavaGrammarListener ) ((MiniJavaGrammarListener)listener).exitProgram(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof MiniJavaGrammarVisitor ) return ((MiniJavaGrammarVisitor<? extends T>)visitor).visitGoal(this);
+			if ( visitor instanceof MiniJavaGrammarVisitor ) return ((MiniJavaGrammarVisitor<? extends T>)visitor).visitProgram(this);
 			else return visitor.visitChildren(this);
 		}
 	}
 
-	public final GoalContext goal() throws RecognitionException {
-		GoalContext _localctx = new GoalContext(_ctx, getState());
-		enterRule(_localctx, 0, RULE_goal);
+	public final ProgramContext program() throws RecognitionException {
+		ProgramContext _localctx = new ProgramContext(_ctx, getState());
+		enterRule(_localctx, 0, RULE_program);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
