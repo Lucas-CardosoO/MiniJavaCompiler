@@ -43,10 +43,14 @@ varDeclaration: type id SEMICOLON;
 
 methodDeclaration: 'public' type id LP (type id (COMMA type id)*)? RP '{' (varDeclaration)* (statement)* 'return' expression SEMICOLON '}';
 
-type: 'int' LSB RSB
-    | 'boolean'
-    | 'int'
+type: INTARRAY
+    | BOOLEAN
+    | INT
     | id;
+
+INTARRAY: INT LSB RSB;
+BOOLEAN: 'boolean';
+INT: 'int';
 
 statement: '{' (statement)* '}'
     | 'if' LP expression RP statement 'else' statement

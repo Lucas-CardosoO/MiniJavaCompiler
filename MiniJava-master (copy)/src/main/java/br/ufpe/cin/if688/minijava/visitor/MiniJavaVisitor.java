@@ -3,7 +3,6 @@ package br.ufpe.cin.if688.minijava.visitor;
 import br.ufpe.cin.if688.minijava.antlr.MiniJavaGrammarParser;
 import br.ufpe.cin.if688.minijava.antlr.MiniJavaGrammarVisitor;
 import br.ufpe.cin.if688.minijava.ast.*;
-import br.ufpe.cin.if688.minijava.symboltable.Method;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.RuleNode;
@@ -73,7 +72,11 @@ public class MiniJavaVisitor implements MiniJavaGrammarVisitor {
 
     @Override
     public Object visitVarDeclaration(MiniJavaGrammarParser.VarDeclarationContext ctx) {
-        return null;
+        Type type = (Type) ctx.type().accept(this);
+        Identifier id = (Identifier) ctx.id().accept(this);
+
+        VarDecl varDecl = new VarDecl(type, id);
+        return varDecl;
     }
 
     @Override
@@ -83,7 +86,19 @@ public class MiniJavaVisitor implements MiniJavaGrammarVisitor {
 
     @Override
     public Object visitType(MiniJavaGrammarParser.TypeContext ctx) {
-        return null;
+        Type type;
+
+        if (ctx.INTARRAY() != null){
+            type = new IntArrayType();
+        } else if (ctx.BOOLEAN() != null) {
+            type = new BooleanType();
+        } else if (ctx.INT() != null) {
+            type = new IntegerType();
+        } else {
+            type = new IdentifierType(ctx.id().accept(this).toString());
+        }
+
+        return type;
     }
 
     @Override

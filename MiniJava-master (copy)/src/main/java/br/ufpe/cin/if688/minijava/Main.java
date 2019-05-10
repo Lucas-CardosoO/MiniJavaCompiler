@@ -1,7 +1,5 @@
 package br.ufpe.cin.if688.minijava;
 
-import br.ufpe.cin.if688.minijava.antlr.MiniJavaGrammarLexer;
-import br.ufpe.cin.if688.minijava.antlr.MiniJavaGrammarParser;
 import br.ufpe.cin.if688.minijava.ast.Program;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.CharStream;
