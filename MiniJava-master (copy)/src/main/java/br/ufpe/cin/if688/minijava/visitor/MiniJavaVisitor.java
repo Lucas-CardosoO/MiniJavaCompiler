@@ -1,7 +1,6 @@
 package br.ufpe.cin.if688.minijava.visitor;
 
-import br.ufpe.cin.if688.minijava.antlr.MiniJavaGrammarParser;
-import br.ufpe.cin.if688.minijava.antlr.MiniJavaGrammarVisitor;
+import br.ufpe.cin.if688.minijava.antlr.*;
 import br.ufpe.cin.if688.minijava.ast.*;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -42,7 +41,7 @@ public class MiniJavaVisitor implements MiniJavaGrammarVisitor {
 
     @Override
     public Object visitClassDeclaration(MiniJavaGrammarParser.ClassDeclarationContext ctx) {
-        List<MiniJavaGrammarParser.IdContext> idList = ctx.id();
+        List<MiniJavaGrammarParser.> idList = ctx.id();
 
         ClassDecl classDecl;
 
@@ -81,6 +80,12 @@ public class MiniJavaVisitor implements MiniJavaGrammarVisitor {
 
     @Override
     public Object visitMethodDeclaration(MiniJavaGrammarParser.MethodDeclarationContext ctx) {
+        StatementList statementList = new StatementList();
+        for (MiniJavaGrammarParser.StatementContext statement: ctx.statement()) {
+            statementList.addElement((Statement) statement.accept(this));
+        }
+
+        MethodDecl methodDecl = new MethodDecl();
         return null;
     }
 
@@ -103,7 +108,44 @@ public class MiniJavaVisitor implements MiniJavaGrammarVisitor {
 
     @Override
     public Object visitStatement(MiniJavaGrammarParser.StatementContext ctx) {
-        return null;
+        return  ctx.accept(this);
+    }
+
+    @Override
+    public Object visitBracketStatemet(MiniJavaGrammarParser.BracketStatemetContext ctx) {
+        StatementList statementList = new StatementList();
+
+        for (MiniJavaGrammarParser.StatementContext statement: ctx.statement()) {
+            statementList.addElement((Statement) statement.accept(this);
+        }
+
+
+        return new Block(statementList);
+    }
+
+    @Override
+    public Object visitIfStatement(MiniJavaGrammarParser.IfStatementContext ctx) {
+        return new If((Exp) ctx.expression().accept(this), (Statement) ctx.statement(0).accept(this), (Statement) ctx.statement(1).accept(this));
+    }
+
+    @Override
+    public Object visitWhiletStatement(MiniJavaGrammarParser.WhiletStatementContext ctx) {
+        return new While((Exp) ctx.expression().accept(this), (Statement) ctx.statement().accept(this));
+    }
+
+    @Override
+    public Object visitPrintStatement(MiniJavaGrammarParser.PrintStatementContext ctx) {
+        return new Print((Exp) ctx.expression().accept(this));
+    }
+
+    @Override
+    public Object visitAssignStatement(MiniJavaGrammarParser.AssignStatementContext ctx) {
+        return new Assign((Identifier) ctx.id().accept(this), (Exp) ctx.expression().accept(this));
+    }
+
+    @Override
+    public Object visitArrayAssignStatement(MiniJavaGrammarParser.ArrayAssignStatementContext ctx) {
+        return new ArrayAssign((Identifier) ctx.id().accept(this), (Exp) ctx.expression(0).accept(this), (Exp) ctx.expression(1).accept(this));
     }
 
     @Override
@@ -112,8 +154,31 @@ public class MiniJavaVisitor implements MiniJavaGrammarVisitor {
     }
 
     @Override
+    public Object visitNewIntExp(MiniJavaGrammarParser.NewIntExpContext ctx) {
+        return new NewArray((Exp) ctx.expression().accept(this));
+    }
+
+    @Override
+    public Object visitNewIdExp(MiniJavaGrammarParser.NewIdExpContext ctx) {
+        return new NewObject((Identifier) ctx.id().accept(this));
+    }
+
+    @Override
+    public Object visitNotExp(MiniJavaGrammarParser.NotExpContext ctx) {
+        return new Not((Exp) ctx.expression().accept(this));
+    }
+
+    @Override
+    public Object visitParExp(MiniJavaGrammarParser.ParExpContext ctx) {
+        return (Exp) ctx.expression().accept(this);
+    }
+
+    @Override
     public Object visitId(MiniJavaGrammarParser.IdContext ctx) {
-        return null;
+        String idStr = ctx.IDENTIFIER().accept(this).toString();
+
+        Identifier id = new Identifier(idStr);
+        return id;
     }
 
     @Override

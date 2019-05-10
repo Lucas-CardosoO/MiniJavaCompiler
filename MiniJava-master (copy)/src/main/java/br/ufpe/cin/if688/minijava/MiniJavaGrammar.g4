@@ -52,13 +52,23 @@ INTARRAY: INT LSB RSB;
 BOOLEAN: 'boolean';
 INT: 'int';
 
-statement: '{' (statement)* '}'
-    | 'if' LP expression RP statement 'else' statement
-    | 'while' LP expression RP statement
-    | 'System.out.println' LP expression RP SEMICOLON
-    | id EQ expression SEMICOLON
-    | id '[' expression ']' EQ expression SEMICOLON;
+statement: bracketStatemet
+    | ifStatement
+    | whiletStatement
+    | printStatement
+    | assignStatement
+    | arrayAssignStatement;
 
+bracketStatemet: '{' (statement)* '}';
+ifStatement: IFSTM LP expression RP statement 'else' statement;
+whiletStatement: WHILESTM LP expression RP statement;
+printStatement: PRINTSTM LP expression RP SEMICOLON;
+assignStatement: id EQ expression SEMICOLON;
+arrayAssignStatement: id LSB expression RSB EQ expression SEMICOLON;
+
+IFSTM: 'if';
+WHILESTM: 'while';
+PRINTSTM: 'System.out.println';
 
 expression: expression (AND | LT | PLUS | MINUS | TIMES) expression
     | expression LSB expression RSB
@@ -69,15 +79,19 @@ expression: expression (AND | LT | PLUS | MINUS | TIMES) expression
     | FALSE
     | id
     | THIS
-    | 'new' 'int' LSB expression RSB
-    | 'new' id LP RP
-    | NOT expression
-    | LP expression RP;
+    | newIntExp
+    | newIdExp
+    | notExp
+    | parExp;
+
+newIntExp: 'new' 'int' LSB expression RSB;
+newIdExp: 'new' id LP RP;
+notExp: NOT expression;
+parExp: LP expression RP;
 
 id: IDENTIFIER;
 
 IDENTIFIER: VALID_ID_START (VALID_ID_START|INTEGER)*;
-
 
 AND:'&&';
 LT:'<';

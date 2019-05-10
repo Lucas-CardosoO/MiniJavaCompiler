@@ -78,6 +78,66 @@ public interface MiniJavaGrammarListener extends ParseTreeListener {
 	 */
 	void exitStatement(MiniJavaGrammarParser.StatementContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link MiniJavaGrammarParser#bracketStatemet}.
+	 * @param ctx the parse tree
+	 */
+	void enterBracketStatemet(MiniJavaGrammarParser.BracketStatemetContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MiniJavaGrammarParser#bracketStatemet}.
+	 * @param ctx the parse tree
+	 */
+	void exitBracketStatemet(MiniJavaGrammarParser.BracketStatemetContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link MiniJavaGrammarParser#ifStatement}.
+	 * @param ctx the parse tree
+	 */
+	void enterIfStatement(MiniJavaGrammarParser.IfStatementContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MiniJavaGrammarParser#ifStatement}.
+	 * @param ctx the parse tree
+	 */
+	void exitIfStatement(MiniJavaGrammarParser.IfStatementContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link MiniJavaGrammarParser#whiletStatement}.
+	 * @param ctx the parse tree
+	 */
+	void enterWhiletStatement(MiniJavaGrammarParser.WhiletStatementContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MiniJavaGrammarParser#whiletStatement}.
+	 * @param ctx the parse tree
+	 */
+	void exitWhiletStatement(MiniJavaGrammarParser.WhiletStatementContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link MiniJavaGrammarParser#printStatement}.
+	 * @param ctx the parse tree
+	 */
+	void enterPrintStatement(MiniJavaGrammarParser.PrintStatementContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MiniJavaGrammarParser#printStatement}.
+	 * @param ctx the parse tree
+	 */
+	void exitPrintStatement(MiniJavaGrammarParser.PrintStatementContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link MiniJavaGrammarParser#assignStatement}.
+	 * @param ctx the parse tree
+	 */
+	void enterAssignStatement(MiniJavaGrammarParser.AssignStatementContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MiniJavaGrammarParser#assignStatement}.
+	 * @param ctx the parse tree
+	 */
+	void exitAssignStatement(MiniJavaGrammarParser.AssignStatementContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link MiniJavaGrammarParser#arrayAssignStatement}.
+	 * @param ctx the parse tree
+	 */
+	void enterArrayAssignStatement(MiniJavaGrammarParser.ArrayAssignStatementContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MiniJavaGrammarParser#arrayAssignStatement}.
+	 * @param ctx the parse tree
+	 */
+	void exitArrayAssignStatement(MiniJavaGrammarParser.ArrayAssignStatementContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link MiniJavaGrammarParser#expression}.
 	 * @param ctx the parse tree
 	 */
@@ -87,6 +147,46 @@ public interface MiniJavaGrammarListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitExpression(MiniJavaGrammarParser.ExpressionContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link MiniJavaGrammarParser#newIntExp}.
+	 * @param ctx the parse tree
+	 */
+	void enterNewIntExp(MiniJavaGrammarParser.NewIntExpContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MiniJavaGrammarParser#newIntExp}.
+	 * @param ctx the parse tree
+	 */
+	void exitNewIntExp(MiniJavaGrammarParser.NewIntExpContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link MiniJavaGrammarParser#newIdExp}.
+	 * @param ctx the parse tree
+	 */
+	void enterNewIdExp(MiniJavaGrammarParser.NewIdExpContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MiniJavaGrammarParser#newIdExp}.
+	 * @param ctx the parse tree
+	 */
+	void exitNewIdExp(MiniJavaGrammarParser.NewIdExpContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link MiniJavaGrammarParser#notExp}.
+	 * @param ctx the parse tree
+	 */
+	void enterNotExp(MiniJavaGrammarParser.NotExpContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MiniJavaGrammarParser#notExp}.
+	 * @param ctx the parse tree
+	 */
+	void exitNotExp(MiniJavaGrammarParser.NotExpContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link MiniJavaGrammarParser#parExp}.
+	 * @param ctx the parse tree
+	 */
+	void enterParExp(MiniJavaGrammarParser.ParExpContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MiniJavaGrammarParser#parExp}.
+	 * @param ctx the parse tree
+	 */
+	void exitParExp(MiniJavaGrammarParser.ParExpContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link MiniJavaGrammarParser#id}.
 	 * @param ctx the parse tree
