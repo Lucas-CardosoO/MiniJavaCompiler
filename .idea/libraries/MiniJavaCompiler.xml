@@ -1,7 +1,8 @@
 <component name="libraryTable">
-  <library name="antlr-4.7.2-complete">
+  <library name="MiniJavaCompiler">
     <CLASSES>
       <root url="jar://$PROJECT_DIR$/antlr-4.7.2-complete.jar!/" />
+      <root url="jar://$PROJECT_DIR$/antlr-intellij-plugin-v4-1.9.zip!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

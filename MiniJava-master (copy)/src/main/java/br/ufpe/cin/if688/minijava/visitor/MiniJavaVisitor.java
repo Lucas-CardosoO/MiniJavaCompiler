@@ -80,7 +80,22 @@ public class MiniJavaVisitor implements MiniJavaGrammarVisitor {
 
     @Override
     public Object visitMethodDeclaration(MiniJavaGrammarParser.MethodDeclarationContext ctx) {
+        Type type = (Type) ctx.type(0).accept(this);
+
+        Identifier id = (Identifier) ctx.id(0).accept(this);
+
+        FormalList formalList = new FormalList();
+        for (int i = 1; i < ctx.type().size(); i++){
+            Type typex = (Type) ctx.type(i).accept(this);
+            Identifier idx = (Identifier) ctx.id(i).accept(this);
+
+            Formal formal = new Formal(typex, idx);
+            formalList.addElement(formal);
+        }
+
+
         StatementList statementList = new StatementList();
+
         for (MiniJavaGrammarParser.StatementContext statement: ctx.statement()) {
             statementList.addElement((Statement) statement.accept(this));
         }
@@ -193,7 +208,7 @@ public class MiniJavaVisitor implements MiniJavaGrammarVisitor {
 
     @Override
     public Object visitTerminal(TerminalNode terminalNode) {
-        return null;
+        return terminalNode.getSymbol().getText();
     }
 
     @Override
