@@ -137,6 +137,14 @@ public class BuildSymbolTableVisitor implements IVisitor<Void> {
 			PrintException.methodDeclarationOutsideOfClass(n.i.s);
 		}
 
+		for (int i = 0; i < n.fl.size(); i++) {
+			for (int j = i+1; j < n.fl.size(); j++) {
+				if (n.fl.elementAt(i).i.s.equals(n.fl.elementAt(j).i.s)) {
+					PrintException.duplicateParameter(n.fl.elementAt(i).i.s);
+				}
+			}
+		}
+
 		if(currClass.containsMethod(n.i.s)) {
 			PrintException.duplicateMethod(n.i.s);
 		}

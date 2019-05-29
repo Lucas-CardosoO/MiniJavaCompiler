@@ -35,6 +35,9 @@ import br.ufpe.cin.if688.minijava.ast.True;
 import br.ufpe.cin.if688.minijava.ast.Type;
 import br.ufpe.cin.if688.minijava.ast.VarDecl;
 import br.ufpe.cin.if688.minijava.ast.While;
+import br.ufpe.cin.if688.minijava.exceptions.PrintException;
+import br.ufpe.cin.if688.minijava.symboltable.Class;
+import br.ufpe.cin.if688.minijava.symboltable.Method;
 import br.ufpe.cin.if688.minijava.symboltable.SymbolTable;
 
 public class TypeCheckVisitor implements IVisitor<Type> {
@@ -44,6 +47,9 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 	TypeCheckVisitor(SymbolTable st) {
 		symbolTable = st;
 	}
+
+	private Class currClass;
+	private Method currMethod;
 
 	// MainClass m;
 	// ClassDeclList cl;
@@ -298,6 +304,22 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 
 	// String s;
 	public Type visit(Identifier n) {
-		return null;
+		if(!(currClass.containsMethod(n.s) || currClass.containsVar(n.s) || currMethod.containsParam(n.s) || currMethod.containsVar(n.s))) {
+			PrintException.idNotFound(n.s);
+		}
+
+		Type idType;
+
+		if(currClass.getVar(n.s) != null) {
+			idType = currClass.getVar(n.s).type();
+		} else if (currClass.getMethod(n.s) != null) {
+			idType = currClass.getMethod(n.s).type();
+		} else if (currMethod.getParam(n.s) != null) {
+			idType = currMethod.getParam(n.s).type();
+		} else {
+			idType = currMethod.getVar(n.s).type();
+		}
+
+		return idType;
 	}
 }
