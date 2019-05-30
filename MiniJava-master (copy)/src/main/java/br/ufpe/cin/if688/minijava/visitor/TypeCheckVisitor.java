@@ -39,6 +39,7 @@ import br.ufpe.cin.if688.minijava.exceptions.PrintException;
 import br.ufpe.cin.if688.minijava.symboltable.Class;
 import br.ufpe.cin.if688.minijava.symboltable.Method;
 import br.ufpe.cin.if688.minijava.symboltable.SymbolTable;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 
 public class TypeCheckVisitor implements IVisitor<Type> {
 
@@ -81,6 +82,7 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 		for (int i = 0; i < n.ml.size(); i++) {
 			n.ml.elementAt(i).accept(this);
 		}
+
 		return null;
 	}
 
@@ -105,7 +107,8 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 	public Type visit(VarDecl n) {
 		n.t.accept(this);
 		n.i.accept(this);
-		return null;
+
+		return n.t;
 	}
 
 	// Type t;
@@ -115,6 +118,13 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 	// StatementList sl;
 	// Exp e;
 	public Type visit(MethodDecl n) {
+
+		currMethod = symbolTable.getMethod(n.i.s, currClass.getId());
+
+		if (currMethod == null) {
+			PrintException.idNotFound(n.i.s);
+		}
+
 		n.t.accept(this);
 		n.i.accept(this);
 		for (int i = 0; i < n.fl.size(); i++) {
@@ -127,6 +137,8 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 			n.sl.elementAt(i).accept(this);
 		}
 		n.e.accept(this);
+
+		currMethod = null;
 		return null;
 	}
 
@@ -139,20 +151,20 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 	}
 
 	public Type visit(IntArrayType n) {
-		return null;
+		return n;
 	}
 
 	public Type visit(BooleanType n) {
-		return null;
+		return n;
 	}
 
 	public Type visit(IntegerType n) {
-		return null;
+		return n;
 	}
 
 	// String s;
 	public Type visit(IdentifierType n) {
-		return null;
+		return n;
 	}
 
 	// StatementList sl;
@@ -166,7 +178,12 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 	// Exp e;
 	// Statement s1,s2;
 	public Type visit(If n) {
-		n.e.accept(this);
+		Type expType = n.e.accept(this);
+
+		if(!(expType instanceof BooleanType)) {
+			PrintException.typeMatch(new BooleanType(), expType);
+		}
+
 		n.s1.accept(this);
 		n.s2.accept(this);
 		return null;
@@ -175,7 +192,12 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 	// Exp e;
 	// Statement s;
 	public Type visit(While n) {
-		n.e.accept(this);
+		Type expType = n.e.accept(this);
+
+		if(!(expType instanceof BooleanType)) {
+			PrintException.typeMatch(new BooleanType(), expType);
+		}
+
 		n.s.accept(this);
 		return null;
 	}
@@ -189,9 +211,14 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 	// Identifier i;
 	// Exp e;
 	public Type visit(Assign n) {
-		n.i.accept(this);
-		n.e.accept(this);
-		return null;
+		Type idType = n.i.accept(this);
+		Type expType = n.e.accept(this);
+
+		if (!(idType.equals(expType))) {
+			PrintException.typeMatch(idType, expType);
+		}
+
+		return idType;
 	}
 
 	// Identifier i;
@@ -205,37 +232,77 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 
 	// Exp e1,e2;
 	public Type visit(And n) {
-		n.e1.accept(this);
-		n.e2.accept(this);
-		return null;
+		Type e1Type = n.e1.accept(this);
+		Type e2Type = n.e2.accept(this);
+
+		if(!(e1Type instanceof IntegerType)) {
+			PrintException.typeMatch(new BooleanType(), e1Type);
+		}
+		if (!(e2Type instanceof IntegerType)) {
+			PrintException.typeMatch(new BooleanType(), e2Type);
+		}
+
+		return e1Type;
 	}
 
 	// Exp e1,e2;
 	public Type visit(LessThan n) {
-		n.e1.accept(this);
-		n.e2.accept(this);
-		return null;
+		Type e1Type = n.e1.accept(this);
+		Type e2Type = n.e2.accept(this);
+
+		if(!(e1Type instanceof IntegerType)) {
+			PrintException.typeMatch(new IntegerType(), e1Type);
+		}
+		if (!(e2Type instanceof IntegerType)) {
+			PrintException.typeMatch(new IntegerType(), e2Type);
+		}
+
+		return e1Type;
 	}
 
 	// Exp e1,e2;
 	public Type visit(Plus n) {
-		n.e1.accept(this);
-		n.e2.accept(this);
-		return null;
+		Type e1Type = n.e1.accept(this);
+		Type e2Type = n.e2.accept(this);
+
+		if(!(e1Type instanceof IntegerType)) {
+			PrintException.typeMatch(new IntegerType(), e1Type);
+		}
+		if (!(e2Type instanceof IntegerType)) {
+			PrintException.typeMatch(new IntegerType(), e2Type);
+		}
+
+		return e1Type;
 	}
 
 	// Exp e1,e2;
 	public Type visit(Minus n) {
-		n.e1.accept(this);
-		n.e2.accept(this);
-		return null;
+		Type e1Type = n.e1.accept(this);
+		Type e2Type = n.e2.accept(this);
+
+		if(!(e1Type instanceof IntegerType)) {
+			PrintException.typeMatch(new IntegerType(), e1Type);
+		}
+		if (!(e2Type instanceof IntegerType)) {
+			PrintException.typeMatch(new IntegerType(), e2Type);
+		}
+
+		return e1Type;
 	}
 
 	// Exp e1,e2;
 	public Type visit(Times n) {
-		n.e1.accept(this);
-		n.e2.accept(this);
-		return null;
+		Type e1Type = n.e1.accept(this);
+		Type e2Type = n.e2.accept(this);
+
+		if(!(e1Type instanceof IntegerType)) {
+			PrintException.typeMatch(new IntegerType(), e1Type);
+		}
+		if (!(e2Type instanceof IntegerType)) {
+			PrintException.typeMatch(new IntegerType(), e2Type);
+		}
+
+		return e1Type;
 	}
 
 	// Exp e1,e2;
@@ -247,8 +314,13 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 
 	// Exp e;
 	public Type visit(ArrayLength n) {
-		n.e.accept(this);
-		return null;
+		Type arrayType = n.e.accept(this);
+
+		if (!(arrayType instanceof IntegerType)) {
+			PrintException.typeMatch(new IntegerType(), arrayType);
+		}
+
+		return arrayType;
 	}
 
 	// Exp e;
@@ -265,41 +337,53 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 
 	// int i;
 	public Type visit(IntegerLiteral n) {
-		return null;
+		return new IntegerType();
 	}
 
 	public Type visit(True n) {
-		return null;
+		return new BooleanType();
 	}
 
 	public Type visit(False n) {
-		return null;
+		return new BooleanType();
 	}
 
 	// String s;
 	public Type visit(IdentifierExp n) {
-		return null;
+		return new Identifier(n.s).accept(this);
 	}
 
 	public Type visit(This n) {
-		return null;
+		return currClass.type();
 	}
 
 	// Exp e;
 	public Type visit(NewArray n) {
-		n.e.accept(this);
+		Type expType = n.e.accept(this);
+
+		if (!(expType instanceof IntegerType)) {
+			PrintException.typeMatch(new IntegerType(), expType);
+		}
+
 		return null;
 	}
 
 	// Identifier i;
 	public Type visit(NewObject n) {
+		if(!(symbolTable.containsClass(n.i.s))) {
+			PrintException.idNotFound(n.i.s);
+		}
+
 		return null;
 	}
 
 	// Exp e;
 	public Type visit(Not n) {
-		n.e.accept(this);
-		return null;
+		Type expType = n.e.accept(this);
+		if (!(expType instanceof BooleanType)) {
+			PrintException.typeMatch(new BooleanType(), expType);
+		}
+		return expType;
 	}
 
 	// String s;

@@ -82,7 +82,12 @@ public class BuildSymbolTableVisitor implements IVisitor<Void> {
 			PrintException.duplicateClass(n.i.s);
 		}
 		getSymbolTable().addClass(n.i.s, null);
-		currClass = getSymbolTable().getClass(n.i.s);
+
+		currClass = symbolTable.getClass(n.i.s);
+
+		if (currClass == null) {
+			PrintException.idNotFound(n.i.s);
+		}
 
 		n.i.accept(this);
 		for (int i = 0; i < n.vl.size(); i++) {
@@ -91,6 +96,8 @@ public class BuildSymbolTableVisitor implements IVisitor<Void> {
 		for (int i = 0; i < n.ml.size(); i++) {
 			n.ml.elementAt(i).accept(this);
 		}
+
+		currClass = null;
 		return null;
 	}
 
@@ -100,7 +107,12 @@ public class BuildSymbolTableVisitor implements IVisitor<Void> {
 	// MethodDeclList ml;
 	public Void visit(ClassDeclExtends n) {
 		getSymbolTable().addClass(n.i.s, n.j.s);
-		currClass = getSymbolTable().getClass(n.i.s);
+		currClass = symbolTable.getClass(n.i.s);
+
+		if (!(symbolTable.containsClass(n.j.s))) {
+			PrintException.idNotFound(n.j.s);
+		}
+
 
 		n.i.accept(this);
 		n.j.accept(this);
@@ -110,6 +122,8 @@ public class BuildSymbolTableVisitor implements IVisitor<Void> {
 		for (int i = 0; i < n.ml.size(); i++) {
 			n.ml.elementAt(i).accept(this);
 		}
+
+		currClass = null;
 		return null;
 	}
 
@@ -119,7 +133,11 @@ public class BuildSymbolTableVisitor implements IVisitor<Void> {
 		if(getSymbolTable().getClass(currClass.getId()).containsVar(n.i.s)) {
 			PrintException.duplicateVariable(n.i.s);
 		}
-		currClass.addVar(n.i.s, n.t);
+		if (currMethod != null) {
+			currMethod.addVar(n.i.s, n.t);
+		} else {
+			currClass.addVar(n.i.s, n.t);
+		}
 
 		n.t.accept(this);
 		n.i.accept(this);
@@ -164,6 +182,8 @@ public class BuildSymbolTableVisitor implements IVisitor<Void> {
 			n.sl.elementAt(i).accept(this);
 		}
 		n.e.accept(this);
+
+		currMethod = null;
 		return null;
 	}
 
