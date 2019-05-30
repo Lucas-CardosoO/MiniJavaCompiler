@@ -39,13 +39,13 @@ import br.ufpe.cin.if688.minijava.exceptions.PrintException;
 import br.ufpe.cin.if688.minijava.symboltable.Class;
 import br.ufpe.cin.if688.minijava.symboltable.Method;
 import br.ufpe.cin.if688.minijava.symboltable.SymbolTable;
-import com.sun.org.apache.xpath.internal.operations.Bool;
+
 
 public class TypeCheckVisitor implements IVisitor<Type> {
 
 	private SymbolTable symbolTable;
 
-	TypeCheckVisitor(SymbolTable st) {
+	public TypeCheckVisitor(SymbolTable st) {
 		symbolTable = st;
 	}
 
@@ -75,6 +75,8 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 	// VarDeclList vl;
 	// MethodDeclList ml;
 	public Type visit(ClassDeclSimple n) {
+		currClass = symbolTable.getClass(n.i.s);
+
 		n.i.accept(this);
 		for (int i = 0; i < n.vl.size(); i++) {
 			n.vl.elementAt(i).accept(this);
@@ -83,6 +85,7 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 			n.ml.elementAt(i).accept(this);
 		}
 
+		currClass = null;
 		return null;
 	}
 
@@ -91,6 +94,8 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 	// VarDeclList vl;
 	// MethodDeclList ml;
 	public Type visit(ClassDeclExtends n) {
+		currClass = symbolTable.getClass(n.i.s);
+
 		n.i.accept(this);
 		n.j.accept(this);
 		for (int i = 0; i < n.vl.size(); i++) {
@@ -99,6 +104,8 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 		for (int i = 0; i < n.ml.size(); i++) {
 			n.ml.elementAt(i).accept(this);
 		}
+
+		currClass = null;
 		return null;
 	}
 

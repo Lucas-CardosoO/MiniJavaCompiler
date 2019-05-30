@@ -42,7 +42,7 @@ import br.ufpe.cin.if688.minijava.exceptions.PrintException;
 
 public class BuildSymbolTableVisitor implements IVisitor<Void> {
 
-	SymbolTable symbolTable;
+	public SymbolTable symbolTable;
 
 	public BuildSymbolTableVisitor() {
 		symbolTable = new SymbolTable();
