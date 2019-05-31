@@ -68,9 +68,26 @@ public class BuildSymbolTableVisitor implements IVisitor<Void> {
 	// Identifier i1,i2;
 	// Statement s;
 	public Void visit(MainClass n) {
+		if(!getSymbolTable().addClass(n.i1.s, null)){
+			PrintException.duplicateClass(n.i1.s);
+		}
+
+		currClass = symbolTable.getClass(n.i1.s);
+
+		if(!currClass.addMethod("main", null)){
+			PrintException.duplicateMethod("main");
+		}
+
+		currMethod = currClass.getMethod("main");
+
+		currMethod.addParam(n.i2.s, null);
+
 		n.i1.accept(this);
 		n.i2.accept(this);
 		n.s.accept(this);
+
+		currClass = null;
+		currMethod = null;
 		return null;
 	}
 
@@ -106,13 +123,10 @@ public class BuildSymbolTableVisitor implements IVisitor<Void> {
 	// VarDeclList vl;
 	// MethodDeclList ml;
 	public Void visit(ClassDeclExtends n) {
-		getSymbolTable().addClass(n.i.s, n.j.s);
-		currClass = symbolTable.getClass(n.i.s);
-
-		if (!(symbolTable.containsClass(n.j.s))) {
-			PrintException.idNotFound(n.j.s);
+		if(!symbolTable.addClass(n.i.s, n.j.s)) {
+			PrintException.duplicateClass(n.i.s);
 		}
-
+		currClass = symbolTable.getClass(n.i.s);
 
 		n.i.accept(this);
 		n.j.accept(this);
@@ -130,13 +144,15 @@ public class BuildSymbolTableVisitor implements IVisitor<Void> {
 	// Type t;
 	// Identifier i;
 	public Void visit(VarDecl n) {
-		if(getSymbolTable().getClass(currClass.getId()).containsVar(n.i.s)) {
-			PrintException.duplicateVariable(n.i.s);
-		}
+
 		if (currMethod != null) {
-			currMethod.addVar(n.i.s, n.t);
+			if(!currMethod.addVar(n.i.s, n.t)) {
+				PrintException.duplicateVariable(n.i.s);
+			}
 		} else {
-			currClass.addVar(n.i.s, n.t);
+			if(!currClass.addVar(n.i.s, n.t)) {
+				PrintException.duplicateVariable(n.i.s);
+			}
 		}
 
 		n.t.accept(this);
@@ -155,13 +171,6 @@ public class BuildSymbolTableVisitor implements IVisitor<Void> {
 			PrintException.methodDeclarationOutsideOfClass(n.i.s);
 		}
 
-		for (int i = 0; i < n.fl.size(); i++) {
-			for (int j = i+1; j < n.fl.size(); j++) {
-				if (n.fl.elementAt(i).i.s.equals(n.fl.elementAt(j).i.s)) {
-					PrintException.duplicateParameter(n.fl.elementAt(i).i.s);
-				}
-			}
-		}
 
 		if(currClass.containsMethod(n.i.s)) {
 			PrintException.duplicateMethod(n.i.s);
@@ -190,6 +199,10 @@ public class BuildSymbolTableVisitor implements IVisitor<Void> {
 	// Type t;
 	// Identifier i;
 	public Void visit(Formal n) {
+		if (!currMethod.addParam(n.i.s, n.t)) {
+			PrintException.duplicateParameter(n.i.s);
+		}
+
 		n.t.accept(this);
 		n.i.accept(this);
 		return null;

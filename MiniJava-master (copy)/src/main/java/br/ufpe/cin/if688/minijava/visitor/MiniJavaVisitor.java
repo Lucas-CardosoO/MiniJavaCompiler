@@ -7,7 +7,6 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.RuleNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
-import javax.swing.plaf.nimbus.State;
 import java.util.List;
 
 public class MiniJavaVisitor implements MiniJavaGrammarVisitor {
