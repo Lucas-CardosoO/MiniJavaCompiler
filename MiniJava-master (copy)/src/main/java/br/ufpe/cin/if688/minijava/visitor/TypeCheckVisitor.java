@@ -388,7 +388,20 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 
 		Enumeration enumParams = currMethod.getParams();
 		for (int i = 0; i < n.el.size(); i++) {
-			n.el.elementAt(i).accept(this);
+			if (!enumParams.hasMoreElements()) {
+				PrintException.tooManyArguments(n.i.s);
+			}
+
+			Type expType = n.el.elementAt(i).accept(this);
+			Type expDesiredType = ((Variable) enumParams.nextElement()).type();
+
+			if (!symbolTable.compareTypes(expDesiredType, expType)){
+				PrintException.typeMatch(expDesiredType, expType);
+			}
+		}
+
+		if (enumParams.hasMoreElements()) {
+			PrintException.tooFewArguments(n.i.s);
 		}
 		return null;
 	}
