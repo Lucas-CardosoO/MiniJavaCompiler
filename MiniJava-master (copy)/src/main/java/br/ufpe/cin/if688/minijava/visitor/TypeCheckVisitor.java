@@ -377,8 +377,16 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 	// Identifier i;
 	// ExpList el;
 	public Type visit(Call n) {
+		Method calledMethod = myGetMethod(n.i.s, currClass.getId());
+
+		if (calledMethod == null) {
+			PrintException.idNotFound(n.i.s);
+		}
+
 		n.e.accept(this);
 		n.i.accept(this);
+
+		Enumeration enumParams = currMethod.getParams();
 		for (int i = 0; i < n.el.size(); i++) {
 			n.el.elementAt(i).accept(this);
 		}
@@ -438,6 +446,28 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 
 	// String s;
 	public Type visit(Identifier n) {
+		return null;
+	}
+
+	public Method myGetMethod(String id, String classScope) {
+		if (symbolTable.getClass(classScope) == null) {
+			System.out.println("Class '" + classScope + "' not defined");
+			System.exit(0);
+//			throw new RuntimeException(String.format("Class " + classScope + " nao definida"));
+		}
+
+		Class c = symbolTable.getClass(classScope);
+		while (c != null) {
+			if (c.getMethod(id) != null) {
+				return c.getMethod(id);
+			} else {
+				if (c.parent() == null) {
+					c = null;
+				} else {
+					c = symbolTable.getClass(c.parent());
+				}
+			}
+		}
 		return null;
 	}
 }
