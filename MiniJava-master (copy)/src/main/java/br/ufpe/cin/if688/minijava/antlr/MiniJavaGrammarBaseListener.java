@@ -76,13 +76,13 @@ public class MiniJavaGrammarBaseListener implements MiniJavaGrammarListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterType(MiniJavaGrammarParser.TypeContext ctx) { }
+	@Override public void enterParameterList(MiniJavaGrammarParser.ParameterListContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitType(MiniJavaGrammarParser.TypeContext ctx) { }
+	@Override public void exitParameterList(MiniJavaGrammarParser.ParameterListContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -100,13 +100,13 @@ public class MiniJavaGrammarBaseListener implements MiniJavaGrammarListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterBracketStatemet(MiniJavaGrammarParser.BracketStatemetContext ctx) { }
+	@Override public void enterStatementBlock(MiniJavaGrammarParser.StatementBlockContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitBracketStatemet(MiniJavaGrammarParser.BracketStatemetContext ctx) { }
+	@Override public void exitStatementBlock(MiniJavaGrammarParser.StatementBlockContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -124,49 +124,49 @@ public class MiniJavaGrammarBaseListener implements MiniJavaGrammarListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterWhiletStatement(MiniJavaGrammarParser.WhiletStatementContext ctx) { }
+	@Override public void enterWhileStatement(MiniJavaGrammarParser.WhileStatementContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitWhiletStatement(MiniJavaGrammarParser.WhiletStatementContext ctx) { }
+	@Override public void exitWhileStatement(MiniJavaGrammarParser.WhileStatementContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterPrintStatement(MiniJavaGrammarParser.PrintStatementContext ctx) { }
+	@Override public void enterAssignment(MiniJavaGrammarParser.AssignmentContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitPrintStatement(MiniJavaGrammarParser.PrintStatementContext ctx) { }
+	@Override public void exitAssignment(MiniJavaGrammarParser.AssignmentContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterAssignStatement(MiniJavaGrammarParser.AssignStatementContext ctx) { }
+	@Override public void enterPrint(MiniJavaGrammarParser.PrintContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitAssignStatement(MiniJavaGrammarParser.AssignStatementContext ctx) { }
+	@Override public void exitPrint(MiniJavaGrammarParser.PrintContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterArrayAssignStatement(MiniJavaGrammarParser.ArrayAssignStatementContext ctx) { }
+	@Override public void enterArrayAssignment(MiniJavaGrammarParser.ArrayAssignmentContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitArrayAssignStatement(MiniJavaGrammarParser.ArrayAssignStatementContext ctx) { }
+	@Override public void exitArrayAssignment(MiniJavaGrammarParser.ArrayAssignmentContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -184,61 +184,85 @@ public class MiniJavaGrammarBaseListener implements MiniJavaGrammarListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterNewIntExp(MiniJavaGrammarParser.NewIntExpContext ctx) { }
+	@Override public void enterParentesis(MiniJavaGrammarParser.ParentesisContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitNewIntExp(MiniJavaGrammarParser.NewIntExpContext ctx) { }
+	@Override public void exitParentesis(MiniJavaGrammarParser.ParentesisContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterNewIdExp(MiniJavaGrammarParser.NewIdExpContext ctx) { }
+	@Override public void enterParameterListCall(MiniJavaGrammarParser.ParameterListCallContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitNewIdExp(MiniJavaGrammarParser.NewIdExpContext ctx) { }
+	@Override public void exitParameterListCall(MiniJavaGrammarParser.ParameterListCallContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterNotExp(MiniJavaGrammarParser.NotExpContext ctx) { }
+	@Override public void enterNotExpression(MiniJavaGrammarParser.NotExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitNotExp(MiniJavaGrammarParser.NotExpContext ctx) { }
+	@Override public void exitNotExpression(MiniJavaGrammarParser.NotExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterParExp(MiniJavaGrammarParser.ParExpContext ctx) { }
+	@Override public void enterObjectInstatiation(MiniJavaGrammarParser.ObjectInstatiationContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitParExp(MiniJavaGrammarParser.ParExpContext ctx) { }
+	@Override public void exitObjectInstatiation(MiniJavaGrammarParser.ObjectInstatiationContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterId(MiniJavaGrammarParser.IdContext ctx) { }
+	@Override public void enterArrayInstatiation(MiniJavaGrammarParser.ArrayInstatiationContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitId(MiniJavaGrammarParser.IdContext ctx) { }
+	@Override public void exitArrayInstatiation(MiniJavaGrammarParser.ArrayInstatiationContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterIdentifier(MiniJavaGrammarParser.IdentifierContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitIdentifier(MiniJavaGrammarParser.IdentifierContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterType(MiniJavaGrammarParser.TypeContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitType(MiniJavaGrammarParser.TypeContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

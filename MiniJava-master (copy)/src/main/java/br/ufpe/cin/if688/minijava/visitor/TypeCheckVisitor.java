@@ -377,16 +377,17 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 	// Identifier i;
 	// ExpList el;
 	public Type visit(Call n) {
-		Method calledMethod = myGetMethod(n.i.s, currClass.getId());
+		IdentifierType methodCaller = (IdentifierType) n.e.accept(this);
+
+		Method calledMethod = myGetMethod(n.i.s, methodCaller.s);
 
 		if (calledMethod == null) {
 			PrintException.idNotFound(n.i.s);
 		}
 
-		n.e.accept(this);
 		n.i.accept(this);
 
-		Enumeration enumParams = currMethod.getParams();
+		Enumeration enumParams = calledMethod.getParams();
 		for (int i = 0; i < n.el.size(); i++) {
 			if (!enumParams.hasMoreElements()) {
 				PrintException.tooManyArguments(n.i.s);
@@ -403,7 +404,7 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 		if (enumParams.hasMoreElements()) {
 			PrintException.tooFewArguments(n.i.s);
 		}
-		return null;
+		return symbolTable.getMethodType(calledMethod.getId(), methodCaller.s);
 	}
 
 	// int i;
@@ -421,7 +422,9 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 
 	// String s;
 	public Type visit(IdentifierExp n) {
-		return symbolTable.getVarType(currMethod, currClass, n.s);
+		Type idType = symbolTable.getVarType(currMethod, currClass, n.s);
+
+		return idType;
 	}
 
 	public Type visit(This n) {

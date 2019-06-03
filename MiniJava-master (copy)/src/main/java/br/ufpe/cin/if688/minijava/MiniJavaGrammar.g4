@@ -1,13 +1,10 @@
 /*
 BSD License
-
 Copyright (c) 2013, Tom Everett
 All rights reserved.
-
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions
 are met:
-
 1. Redistributions of source code must retain the above copyright
    notice, this list of conditions and the following disclaimer.
 2. Redistributions in binary form must reproduce the above copyright
@@ -16,7 +13,6 @@ are met:
 3. Neither the name of Tom Everett nor the names of its contributors
    may be used to endorse or promote products derived from this software
    without specific prior written permission.
-
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
 "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
 LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
@@ -32,90 +28,292 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 grammar MiniJavaGrammar;
 
+program
+   : mainClass classDeclaration*
+    ;
 
-program: mainClass(classDeclaration)* EOF;
+mainClass
+    : CLASS identifier OPEN_BLOCK
+        PUBLIC STATIC VOID MAIN OPEN_PARENTESIS STRING OPEN_BRACKET CLOSE_BRACKET identifier CLOSE_PARENTESIS
+        OPEN_BLOCK statement CLOSE_BLOCK
+     CLOSE_BLOCK
+    ;
 
-mainClass: 'class' id '{' 'public' 'static' 'void' 'main' LP 'String' '[' ']' id RP '{' statement '}' '}';
+classDeclaration
+    :
+        CLASS identifier (EXTENDS identifier)? OPEN_BLOCK
+            varDeclaration*
+            methodDeclaration*
+        CLOSE_BLOCK
+    ;
 
-classDeclaration: 'class' id ('extends' id)? '{'(varDeclaration)* (methodDeclaration)* '}';
+varDeclaration
+    : type identifier SEMICOLON
+    ;
 
-varDeclaration: type id SEMICOLON;
+methodDeclaration
+    : PUBLIC type identifier OPEN_PARENTESIS (parameterList)? CLOSE_PARENTESIS
+    OPEN_BLOCK
+        varDeclaration*
+        statement*
+        RETURN expression SEMICOLON
+    CLOSE_BLOCK
+    ;
 
-methodDeclaration: 'public' type id LP (type id (COMMA type id)*)? RP '{' (varDeclaration)* (statement)* 'return' expression SEMICOLON '}';
+parameterList:
+        type identifier (COMMA type identifier)*
+    ;
 
-type: INTARRAY
-    | BOOLEAN
-    | INT
-    | id;
+statement
+    : statementBlock |
+      assignment |
+      arrayAssignment |
+      print |
+      ifStatement |
+      whileStatement
+    ;
 
-INTARRAY: INT LSB RSB;
-BOOLEAN: 'boolean';
-INT: 'int';
+statementBlock
+    : OPEN_BLOCK statement* CLOSE_BLOCK
+    ;
 
-statement: bracketStatemet
-    | ifStatement
-    | whiletStatement
-    | printStatement
-    | assignStatement
-    | arrayAssignStatement;
+ifStatement
+    : IF OPEN_PARENTESIS expression CLOSE_PARENTESIS statement ELSE statement
+    ;
 
-bracketStatemet: '{' (statement)* '}';
-ifStatement: IFSTM LP expression RP statement 'else' statement;
-whiletStatement: WHILESTM LP expression RP statement;
-printStatement: PRINTSTM LP expression RP SEMICOLON;
-assignStatement: id EQ expression SEMICOLON;
-arrayAssignStatement: id LSB expression RSB EQ expression SEMICOLON;
+whileStatement
+    : WHILE OPEN_PARENTESIS expression CLOSE_PARENTESIS statement
+    ;
 
-IFSTM: 'if';
-WHILESTM: 'while';
-PRINTSTM: 'System.out.println';
+assignment
+    : identifier EQUALS expression SEMICOLON
+    ;
 
-expression: expression (AND | LT | PLUS | MINUS | TIMES) expression
-    | expression LSB expression RSB
-    | expression DOTLENGTH
-    | expression DOT id LP (expression (COMMA expression)*)? RP
-    | MINUS? INTEGER
-    | TRUE
-    | FALSE
-    | id
-    | THIS
-    | newIntExp
-    | newIdExp
-    | notExp
-    | parExp;
+print
+    : SISOUT OPEN_PARENTESIS expression CLOSE_PARENTESIS SEMICOLON
+    ;
 
-newIntExp: 'new' 'int' LSB expression RSB;
-newIdExp: 'new' id LP RP;
-notExp: NOT expression;
-parExp: LP expression RP;
+arrayAssignment
+    : identifier OPEN_BRACKET expression CLOSE_BRACKET EQUALS expression SEMICOLON
+    ;
 
-id: IDENTIFIER;
+expression
+    : TRUE | FALSE | INTEGER | THIS |
+      notExpression |
+      objectInstatiation |
+      arrayInstatiation |
+      identifier |
+      parentesis |
+      expression DOT identifier OPEN_PARENTESIS ( parameterListCall )? CLOSE_PARENTESIS |
+      expression  (AND | PLUS | MINUS | TIMES | LESS_THAN) expression |
+      expression DOT LENGTH |
+      expression OPEN_BRACKET expression CLOSE_BRACKET
+    ;
 
-IDENTIFIER: VALID_ID_START (VALID_ID_START|INTEGER)*;
+parentesis
+    :
+    OPEN_PARENTESIS expression CLOSE_PARENTESIS
+    ;
 
-AND:'&&';
-LT:'<';
-PLUS:'+';
-MINUS:'-';
-TIMES:'*';
-POWER:'**';
-NOT:'!';
-LSB:'[';
-RSB:']';
-DOTLENGTH:'.length';
-LP:'(';
-RP:')';
-EQ: '=';
-DOT: '.';
-COMMA: ',';
-SEMICOLON: ';';
-TRUE: 'true';
-FALSE: 'false';
-INTEGER: ('0' .. '9')+;
-THIS: 'this';
+parameterListCall
+    :
+    expression ( COMMA expression )*
+    ;
 
-VALID_ID_START: ('a' .. 'z') | ('A' .. 'Z') | '_';
+notExpression
+    : NOT expression
+    ;
 
-WS:   [ \r\t\n]+ -> skip;
-MULTILINE_COMMENT:  '/*' .*? '*/' -> skip;
-LINE_COMMENT:  '//' .*? '\n' -> skip;
+objectInstatiation
+    : NEW identifier OPEN_PARENTESIS CLOSE_PARENTESIS
+    ;
+
+arrayInstatiation
+    : NEW INT OPEN_BRACKET expression CLOSE_BRACKET
+    ;
+
+identifier
+    : IDENTIFIER
+    ;
+
+type
+    : INT | INT_ARRAY  | BOOLEAN | identifier
+    ;
+
+LENGTH
+    : 'length'
+    ;
+
+DOT :
+        '.'
+    ;
+
+AND
+    : '&&'
+    ;
+
+LESS_THAN
+    : '<'
+    ;
+
+PLUS
+    : '+'
+    ;
+
+MINUS
+    : '-'
+    ;
+
+TIMES
+    : '*'
+    ;
+
+NOT
+ : '!'
+ ;
+
+NEW
+    : 'new'
+    ;
+
+INTEGER
+    : ('0' .. '9')+
+    ;
+
+THIS
+    : 'this'
+    ;
+
+TRUE
+    : 'true'
+    ;
+
+FALSE
+    : 'false'
+    ;
+
+WHILE
+    : 'while'
+    ;
+
+IF
+    : 'if'
+    ;
+
+ELSE
+    : 'else'
+    ;
+
+SISOUT
+    : 'System.out.println'
+    ;
+
+EQUALS
+    : '='
+    ;
+
+SEMICOLON
+    : ';'
+    ;
+
+RETURN
+    : 'return'
+    ;
+
+COMMA
+    : ','
+    ;
+
+INT
+    : 'int'
+    ;
+
+INT_ARRAY
+    : INT OPEN_BRACKET CLOSE_BRACKET
+    ;
+
+BOOLEAN
+    : 'boolean'
+    ;
+
+EXTENDS
+    : 'extends'
+    ;
+
+CLASS
+    : 'class'
+    ;
+
+OPEN_BLOCK
+    : '{'
+    ;
+CLOSE_BLOCK
+    : '}'
+    ;
+
+OPEN_PARENTESIS
+    : '('
+    ;
+
+CLOSE_PARENTESIS
+    : ')'
+    ;
+
+OPEN_BRACKET
+    : '['
+    ;
+
+CLOSE_BRACKET
+    : ']'
+    ;
+
+PUBLIC
+    : 'public'
+    ;
+
+STATIC
+    : 'static'
+    ;
+
+VOID
+    : 'void'
+    ;
+
+MAIN
+    : 'main'
+    ;
+
+STRING
+    : 'String'
+    ;
+
+IDENTIFIER
+   : VALID_ID_START(VALID_ID_CHAR)*
+   ;
+
+VALID_ID_START
+   : ('a' .. 'z') | ('A' .. 'Z') | '_'
+   ;
+
+
+ VALID_ID_CHAR
+   : ('a' .. 'z') | ('A' .. 'Z') | '_' | ('0' .. '9')
+   ;
+
+
+SLASH:
+    '/'
+    ;
+
+COMMENT:
+    SLASH SLASH ~[\r\n]* -> skip
+;
+
+MULTI_LINE_COMMENT:
+    '/*' .* '*/' -> skip
+;
+
+
+WS
+   : [ \t\r\n] -> skip
+   ;

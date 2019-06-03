@@ -1,290 +1,467 @@
 package br.ufpe.cin.if688.minijava.visitor;
 
-import br.ufpe.cin.if688.minijava.antlr.*;
+import br.ufpe.cin.if688.minijava.antlr.MiniJavaGrammarVisitor;
 import br.ufpe.cin.if688.minijava.ast.*;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.RuleNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
+import br.ufpe.cin.if688.minijava.antlr.MiniJavaGrammarParser;
 
-import java.util.List;
+import static java.lang.Integer.parseInt;
 
-public class MiniJavaVisitor implements MiniJavaGrammarVisitor {
+public class MiniJavaVisitor implements MiniJavaGrammarVisitor<Program> {
+
+
+    private Program currentProgram;
+    private MainClass currentMain;
+    private ClassDecl currentClass;
+    private Identifier currentIdentifier;
+    private String currentSymbol;
+    private Type currentType;
+    private MethodDecl currentMethod;
+    private Exp currentExp;
+    private Statement currentStatement;
+    private ExpList currentExpList;
+    private VarDecl currentVarDeclaration;
+
+    @Override
+    public Program visit(ParseTree parseTree) {
+        parseTree.accept(this);
+        return currentProgram;
+    }
 
 
     @Override
-    public Object visitProgram(MiniJavaGrammarParser.ProgramContext ctx) {
-        MainClass main = (MainClass) ctx.mainClass().accept(this);
-        ClassDeclList classDecList = new ClassDeclList();
-
-        for (MiniJavaGrammarParser.ClassDeclarationContext i: ctx.classDeclaration()) {
-            classDecList.addElement((ClassDecl) i.accept(this));
-        }
-
-
-        Program prog = new Program(main, classDecList);
-        return prog;
+    public Program visitChildren(RuleNode ruleNode) {
+        System.out.println(ruleNode);
+        return ruleNode.accept(this);
     }
 
     @Override
-    public Object visitMainClass(MiniJavaGrammarParser.MainClassContext ctx) {
-        List<MiniJavaGrammarParser.IdContext> idList = ctx.id();
-
-        Identifier id1 = (Identifier) idList.get(0).accept(this);
-        Identifier id2 = (Identifier) idList.get(1).accept(this);
-
-        Statement stm = (Statement) ctx.statement().accept(this);
-
-        MainClass main = new MainClass(id1, id2, stm);
-        return main;
+    public Program visitErrorNode(ErrorNode errorNode) {
+        System.out.println(errorNode);
+        return errorNode.accept(this);
     }
 
     @Override
-    public Object visitClassDeclaration(MiniJavaGrammarParser.ClassDeclarationContext ctx) {
-        List<MiniJavaGrammarParser.IdContext> idList = ctx.id();
+    public Program visitTerminal(TerminalNode terminalNode) {
+        currentSymbol = terminalNode.getSymbol().getText();
+        return currentProgram;
+    }
 
-        ClassDecl classDecl;
+    @Override
+    public Program visitProgram(MiniJavaGrammarParser.ProgramContext ctx) {
+        ctx.mainClass().accept(this);
+        MainClass mainClass = currentMain;
 
-        VarDeclList varDecList = new VarDeclList();
-        for (MiniJavaGrammarParser.VarDeclarationContext i: ctx.varDeclaration()) {
-            varDecList.addElement((VarDecl) i.accept(this));
+        ClassDeclList classDeclarationList = new ClassDeclList();
+
+        currentProgram = new Program(mainClass, classDeclarationList);
+
+        for (MiniJavaGrammarParser.ClassDeclarationContext classDeclarationCtx : ctx.classDeclaration()) {
+            classDeclarationCtx.accept(this);
+            classDeclarationList.addElement(currentClass);
         }
 
-        MethodDeclList methodDecList = new MethodDeclList();
-        for (MiniJavaGrammarParser.MethodDeclarationContext i: ctx.methodDeclaration()) {
-            methodDecList.addElement((MethodDecl) i.accept(this));
-        }
+        return currentProgram;
+    }
 
-        if (idList.size() == 1) {
-            Identifier id = (Identifier) idList.get(0).accept(this);
+    @Override
+    public Program visitMainClass(MiniJavaGrammarParser.MainClassContext ctx) {
+        ctx.identifier(0).accept(this);
+        Identifier className = currentIdentifier;
 
-            classDecl = new ClassDeclSimple(id, varDecList, methodDecList);
+        ctx.identifier(1).accept(this);
+        Identifier args = currentIdentifier;
+
+        ctx.statement().accept(this);
+        Statement mainStatement = currentStatement;
+
+        currentMain = new MainClass(className, args, mainStatement);
+        return currentProgram;
+    }
+
+    @Override
+    public Program visitClassDeclaration(MiniJavaGrammarParser.ClassDeclarationContext ctx) {
+        MiniJavaGrammarParser.IdentifierContext classNameCtx = ctx.identifier(0);
+        classNameCtx.accept(this);
+        Identifier className = currentIdentifier;
+
+        MiniJavaGrammarParser.IdentifierContext extendsClassNameCtx = ctx.identifier(1);
+        boolean hasExtends = extendsClassNameCtx != null;
+
+        VarDeclList varDeclList = new VarDeclList();
+        MethodDeclList methodDeclList = new MethodDeclList();
+
+        if (hasExtends) {
+            extendsClassNameCtx.accept(this);
+            Identifier extendsClassName = currentIdentifier;
+
+            currentClass = new ClassDeclExtends(className, extendsClassName, varDeclList, methodDeclList);
         } else {
-            Identifier id = (Identifier) idList.get(0).accept(this);
-            Identifier id1 = (Identifier) idList.get(1).accept(this);
-
-            classDecl = new ClassDeclExtends(id, id1, varDecList, methodDecList);
+            currentClass = new ClassDeclSimple(className, varDeclList, methodDeclList);
         }
 
-        return classDecl;
+        for (MiniJavaGrammarParser.VarDeclarationContext varDeclarationContext : ctx.varDeclaration()) {
+            varDeclarationContext.accept(this);
+            varDeclList.addElement(currentVarDeclaration);
+        }
+
+        for (MiniJavaGrammarParser.MethodDeclarationContext methodDeclarationCtx : ctx.methodDeclaration()) {
+            methodDeclarationCtx.accept(this);
+            methodDeclList.addElement(currentMethod);
+        }
+
+        return currentProgram;
     }
 
     @Override
-    public Object visitVarDeclaration(MiniJavaGrammarParser.VarDeclarationContext ctx) {
-        Type type = (Type) ctx.type().accept(this);
-        Identifier id = (Identifier) ctx.id().accept(this);
+    public Program visitIdentifier(MiniJavaGrammarParser.IdentifierContext ctx) {
+        ctx.IDENTIFIER().accept(this);
 
-        VarDecl varDecl = new VarDecl(type, id);
-        return varDecl;
+        currentIdentifier = new Identifier(currentSymbol);
+
+        return currentProgram;
     }
 
     @Override
-    public Object visitMethodDeclaration(MiniJavaGrammarParser.MethodDeclarationContext ctx) {
-        Type type = (Type) ctx.type(0).accept(this);
+    public Program visitVarDeclaration(MiniJavaGrammarParser.VarDeclarationContext ctx) {
+        MiniJavaGrammarParser.TypeContext typeCtx = ctx.type();
+        MiniJavaGrammarParser.IdentifierContext indentifierCtx = ctx.identifier();
 
-        Identifier id = (Identifier) ctx.id(0).accept(this);
+        indentifierCtx.accept(this);
+        Identifier variableIdentifier = currentIdentifier;
+
+        typeCtx.accept(this);
+        Type variableType = currentType;
+
+
+        VarDecl varDeclaration = new VarDecl(variableType, variableIdentifier);
+
+        currentVarDeclaration = varDeclaration;
+
+        return currentProgram;
+    }
+
+    @Override
+    public Program visitType(MiniJavaGrammarParser.TypeContext ctx) {
+        if (ctx.BOOLEAN() != null) {
+            currentType = new BooleanType();
+        } else if (ctx.INT() != null) {
+            currentType = new IntegerType();
+        } else if (ctx.INT_ARRAY() != null) {
+            currentType = new IntArrayType();
+        } else {
+            ctx.identifier().accept(this);
+            currentType = new IdentifierType(currentIdentifier.s);
+        }
+        return currentProgram;
+    }
+
+    @Override
+    public Program visitMethodDeclaration(MiniJavaGrammarParser.MethodDeclarationContext ctx) {
+        ctx.type().accept(this);
+        Type returnType = currentType;
+
+        ctx.identifier().accept(this);
+        Identifier name = currentIdentifier;
+
+        ctx.expression().accept(this);
+        Exp returnExp = currentExp;
 
         FormalList formalList = new FormalList();
-        for (int i = 1; i < ctx.type().size(); i++){
-            Type typex = (Type) ctx.type(i).accept(this);
-            Identifier idx = (Identifier) ctx.id(i).accept(this);
-
-            Formal formal = new Formal(typex, idx);
-            formalList.addElement(formal);
-        }
-
-        VarDeclList varDecList = new VarDeclList();
-        for (MiniJavaGrammarParser.VarDeclarationContext i: ctx.varDeclaration()) {
-            varDecList.addElement((VarDecl) i.accept(this));
-        }
-
+        VarDeclList varDeclList = new VarDeclList();
         StatementList statementList = new StatementList();
 
-        for (MiniJavaGrammarParser.StatementContext statement: ctx.statement()) {
-            statementList.addElement((Statement) statement.accept(this));
+        currentMethod = new MethodDecl(
+                returnType,
+                name,
+                formalList,
+                varDeclList,
+                statementList,
+                returnExp
+        );
+
+        if (ctx.parameterList() != null) {
+            ctx.parameterList().accept(this);
         }
 
-        Exp exp = (Exp) ctx.expression().accept(this);
-
-        MethodDecl methodDecl = new MethodDecl(type, id, formalList, varDecList, statementList, exp);
-        return methodDecl;
-    }
-
-    @Override
-    public Object visitType(MiniJavaGrammarParser.TypeContext ctx) {
-        Type type;
-
-        if (ctx.INTARRAY() != null){
-            type = new IntArrayType();
-        } else if (ctx.BOOLEAN() != null) {
-            type = new BooleanType();
-        } else if (ctx.INT() != null) {
-            type = new IntegerType();
-        } else {
-            type = new IdentifierType(ctx.id().accept(this).toString());
+        for (MiniJavaGrammarParser.VarDeclarationContext varDeclCtx : ctx.varDeclaration()) {
+            varDeclCtx.accept(this);
+            varDeclList.addElement(currentVarDeclaration);
         }
 
-        return type;
-    }
-
-    @Override
-    public Object visitStatement(MiniJavaGrammarParser.StatementContext ctx) {
-        Statement stm;
-
-        if (ctx.arrayAssignStatement() != null) {
-            stm = (ArrayAssign) ctx.arrayAssignStatement().accept(this);
-        } else if(ctx.ifStatement() != null){
-            stm = (If) ctx.ifStatement().accept(this);
-        } else if (ctx.whiletStatement() != null) {
-            stm = (Statement) ctx.whiletStatement().accept(this);
-        } else if (ctx.printStatement() != null) {
-            stm = (Statement) ctx.printStatement().accept(this);
-        } else if (ctx.assignStatement() != null) {
-            stm = (Statement) ctx.assignStatement().accept(this);
-        } else {
-            stm = (Statement) ctx.bracketStatemet().accept(this);
+        for (MiniJavaGrammarParser.StatementContext stmCtx : ctx.statement()) {
+            stmCtx.accept(this);
+            statementList.addElement(currentStatement);
         }
 
-        return  stm;
+        return currentProgram;
     }
 
-    @Override
-    public Object visitBracketStatemet(MiniJavaGrammarParser.BracketStatemetContext ctx) {
-        StatementList statementList = new StatementList();
 
-        for (MiniJavaGrammarParser.StatementContext statement: ctx.statement()) {
-            statementList.addElement((Statement) statement.accept(this));
+    @Override
+    public Program visitParameterList(MiniJavaGrammarParser.ParameterListContext ctx) {
+
+        for (int i = 0; i < ctx.type().size(); i++) {
+            ctx.type(i).accept(this);
+            Type parameterType = currentType;
+
+            ctx.identifier(i).accept(this);
+            Identifier parameterIdentifier = currentIdentifier;
+
+            Formal formal = new Formal(parameterType, parameterIdentifier);
+
+            currentMethod.fl.addElement(formal);
         }
 
-
-        return new Block(statementList);
+        return currentProgram;
     }
 
     @Override
-    public Object visitIfStatement(MiniJavaGrammarParser.IfStatementContext ctx) {
-        return new If((Exp) ctx.expression().accept(this), (Statement) ctx.statement(0).accept(this), (Statement) ctx.statement(1).accept(this));
-    }
+    public Program visitExpression(MiniJavaGrammarParser.ExpressionContext ctx) {
+        MiniJavaGrammarParser.NotExpressionContext notExpression = ctx.notExpression();
+        MiniJavaGrammarParser.ObjectInstatiationContext objInstatiation = ctx.objectInstatiation();
+        MiniJavaGrammarParser.ArrayInstatiationContext arrayInstatiation = ctx.arrayInstatiation();
+        MiniJavaGrammarParser.ParentesisContext parentesisContext = ctx.parentesis();
 
-    @Override
-    public Object visitWhiletStatement(MiniJavaGrammarParser.WhiletStatementContext ctx) {
-        return new While((Exp) ctx.expression().accept(this), (Statement) ctx.statement().accept(this));
-    }
-
-    @Override
-    public Object visitPrintStatement(MiniJavaGrammarParser.PrintStatementContext ctx) {
-        return new Print((Exp) ctx.expression().accept(this));
-    }
-
-    @Override
-    public Object visitAssignStatement(MiniJavaGrammarParser.AssignStatementContext ctx) {
-        return new Assign((Identifier) ctx.id().accept(this), (Exp) ctx.expression().accept(this));
-    }
-
-    @Override
-    public Object visitArrayAssignStatement(MiniJavaGrammarParser.ArrayAssignStatementContext ctx) {
-        return new ArrayAssign((Identifier) ctx.id().accept(this), (Exp) ctx.expression(0).accept(this), (Exp) ctx.expression(1).accept(this));
-    }
-
-    @Override
-    public Object visitExpression(MiniJavaGrammarParser.ExpressionContext ctx) {
-        Exp exp;
-
-        if(ctx.AND() != null) {
-            exp = new And((Exp) ctx.expression(0).accept(this), (Exp) ctx.expression(1).accept(this));
-        } else if (ctx.LT() != null) {
-            exp = new LessThan((Exp) ctx.expression(0).accept(this), (Exp) ctx.expression(1).accept(this));
-        } else if (ctx.PLUS() != null) {
-            exp = new Plus((Exp) ctx.expression(0).accept(this), (Exp) ctx.expression(1).accept(this));
-        } else if (ctx.MINUS() != null) {
-            exp = new Minus((Exp) ctx.expression(0).accept(this), (Exp) ctx.expression(1).accept(this));
-        } else if (ctx.TIMES() != null) {
-            exp = new Times((Exp) ctx.expression(0).accept(this), (Exp) ctx.expression(1).accept(this));
-        } else if (ctx.LSB() != null) {
-            exp = new ArrayLookup((Exp) ctx.expression(0).accept(this), (Exp) ctx.expression(1).accept(this));
-        } else if (ctx.DOTLENGTH() != null) {
-            exp = new ArrayLength((Exp) ctx.expression(0).accept(this));
-        } else if (ctx.DOT() != null) {
-            Exp exp2 = (Exp) ctx.expression(0).accept(this);
-            Identifier id = (Identifier) ctx.id().accept(this);
-            ExpList expList = new ExpList();
-
-            for(int i = 1; i < ctx.expression().size(); i++) {
-                expList.addElement((Exp) ctx.expression(i).accept(this));
-            }
-
-            exp = new Call(exp2, id, expList);
-        } else if (ctx.INTEGER() != null) {
-            if (ctx.MINUS() != null) {
-                exp = new IntegerLiteral(-Integer.parseInt((String) ctx.INTEGER().accept(this)));
-            } else {
-                exp = new IntegerLiteral(Integer.parseInt((String) ctx.INTEGER().accept(this)));
-            }
-        } else if (ctx.TRUE() != null) {
-            exp = new True();
-        } else  if (ctx.FALSE() != null) {
-            exp = new False();
-        } else if (ctx.id() != null) {
-            exp = new IdentifierExp(((Identifier) ctx.id().accept(this)).toString());
+        if (ctx.TRUE() != null) {
+            currentExp = new True();
+        } else if (ctx.FALSE() != null) {
+            currentExp = new False();
         } else if (ctx.THIS() != null) {
-            exp = new This();
-        } else if (ctx.newIntExp() != null){
-            exp = (Exp) ctx.newIntExp().accept(this);
-        } else if (ctx.newIdExp() != null){
-            exp = (Exp) ctx.newIdExp().accept(this);
-        } else if (ctx.notExp() != null){
-            exp = (Exp) ctx.notExp().accept(this);
+            currentExp = new This();
+        } else if (ctx.INTEGER() != null) {
+            ctx.INTEGER().accept(this);
+            currentExp = new IntegerLiteral(parseInt(currentSymbol));
+        } else if (ctx.identifier() != null && ctx.DOT() == null) {
+            ctx.identifier().accept(this);
+            currentExp = new IdentifierExp(currentIdentifier.toString());
+        } else if (notExpression != null) {
+            notExpression.accept(this);
+        } else if (objInstatiation != null) {
+            objInstatiation.accept(this);
+        } else if (arrayInstatiation != null) {
+            arrayInstatiation.accept(this);
+        } else if (parentesisContext != null) {
+            parentesisContext.accept(this);
+        } else if (ctx.LENGTH() != null) {
+            // array length
+            ctx.expression(0).accept(this);
+
+            currentExp = new ArrayLength(currentExp);
+        } else if (ctx.OPEN_BRACKET() != null && ctx.CLOSE_BRACKET() != null) {
+            // array lookup
+            ctx.expression(0).accept(this);
+            Exp array = currentExp;
+            ctx.expression(1).accept(this);
+            Exp index = currentExp;
+
+            currentExp = new ArrayLookup(array, index);
+        } else if (ctx.OPEN_PARENTESIS() !=  null && ctx.CLOSE_PARENTESIS() != null) {
+            // method call
+
+            ctx.expression(0).accept(this);
+            Exp leftExp = currentExp;
+
+            ctx.identifier().accept(this);
+            Identifier methodName = currentIdentifier;
+
+            if (ctx.parameterListCall() != null) {
+                ctx.parameterListCall().accept(this);
+            } else {
+                currentExpList = new ExpList();
+            }
+
+            currentExp = new Call(leftExp, methodName, currentExpList);
+
         } else {
-            exp = (Exp) ctx.parExp().accept(this);
+            // operation
+
+            ctx.expression(0).accept(this);
+            Exp left = currentExp;
+
+            ctx.expression(1).accept(this);
+            Exp right = currentExp;
+
+            if (ctx.PLUS() != null) {
+                currentExp = new Plus(left, right);
+            } else if (ctx.MINUS() != null) {
+                currentExp = new Minus(left, right);
+            } else if (ctx.TIMES() != null) {
+                currentExp = new Times(left, right);
+            } else if (ctx.LESS_THAN() != null) {
+                currentExp = new LessThan(left, right);
+            } else if (ctx.AND() != null) {
+                currentExp = new And(left, right);
+            }
         }
 
-        return exp;
+        return currentProgram;
+    }
+
+
+
+    @Override
+    public Program visitStatement(MiniJavaGrammarParser.StatementContext ctx) {
+        if (ctx.assignment() != null) {
+            ctx.assignment().accept(this);
+        } else if (ctx.arrayAssignment() != null) {
+            ctx.arrayAssignment().accept(this);
+        } else if (ctx.ifStatement() != null) {
+            ctx.ifStatement().accept(this);
+        } else if (ctx.statementBlock() != null) {
+            ctx.statementBlock().accept(this);
+        } else if (ctx.print() != null) {
+            ctx.print().accept(this);
+        } else if (ctx.whileStatement() != null) {
+            ctx.whileStatement().accept(this);
+        }
+
+        return currentProgram;
     }
 
     @Override
-    public Object visitNewIntExp(MiniJavaGrammarParser.NewIntExpContext ctx) {
-        return new NewArray((Exp) ctx.expression().accept(this));
+    public Program visitNotExpression(MiniJavaGrammarParser.NotExpressionContext ctx) {
+        ctx.expression().accept(this);
+
+        currentExp = new Not(currentExp);
+        return currentProgram;
+    }
+
+
+    @Override
+    public Program visitObjectInstatiation(MiniJavaGrammarParser.ObjectInstatiationContext ctx) {
+        ctx.identifier().accept(this);
+        Identifier objClass = currentIdentifier;
+
+        currentExp = new NewObject(objClass);
+
+        return currentProgram;
+    }
+
+
+    @Override
+    public Program visitArrayInstatiation(MiniJavaGrammarParser.ArrayInstatiationContext ctx) {
+        ctx.expression().accept(this);
+        Exp index = currentExp;
+
+        currentExp = new NewArray(index);
+
+        return currentProgram;
     }
 
     @Override
-    public Object visitNewIdExp(MiniJavaGrammarParser.NewIdExpContext ctx) {
-        return new NewObject((Identifier) ctx.id().accept(this));
+    public Program visitParentesis(MiniJavaGrammarParser.ParentesisContext ctx) {
+        ctx.expression().accept(this);
+
+        return currentProgram;
     }
 
     @Override
-    public Object visitNotExp(MiniJavaGrammarParser.NotExpContext ctx) {
-        return new Not((Exp) ctx.expression().accept(this));
+    public Program visitParameterListCall(MiniJavaGrammarParser.ParameterListCallContext ctx) {
+        ExpList parameterList = new ExpList();
+
+
+        for (MiniJavaGrammarParser.ExpressionContext parameterCtx : ctx.expression()) {
+            parameterCtx.accept(this);
+
+            parameterList.addElement(currentExp);
+        }
+
+        currentExpList = parameterList;
+
+        return currentProgram;
+    }
+
+
+
+    @Override
+    public Program visitAssignment(MiniJavaGrammarParser.AssignmentContext ctx) {
+        ctx.identifier().accept(this);
+        Identifier variableIdentifier = currentIdentifier;
+
+        ctx.expression().accept(this);
+        Exp assignmentExp = currentExp;
+
+
+        Assign assignment = new Assign(variableIdentifier, assignmentExp);
+        currentStatement = assignment;
+
+        return currentProgram;
+    }
+
+
+    @Override
+    public Program visitArrayAssignment(MiniJavaGrammarParser.ArrayAssignmentContext ctx) {
+        ctx.identifier().accept(this);
+        Identifier arrayName = currentIdentifier;
+
+        ctx.expression(0).accept(this);
+        Exp index = currentExp;
+
+        ctx.expression(1).accept(this);
+        Exp value = currentExp;
+
+        currentStatement = new ArrayAssign(arrayName, index, value);
+
+        return currentProgram;
+    }
+
+
+    @Override
+    public Program visitIfStatement(MiniJavaGrammarParser.IfStatementContext ctx) {
+        ctx.expression().accept(this);
+        Exp condition =  currentExp;
+
+        ctx.statement(0).accept(this);
+        Statement mainStm = currentStatement;
+
+        ctx.statement(1).accept(this);
+        Statement elseStm = currentStatement;
+
+        currentStatement = new If(condition, mainStm, elseStm);
+
+        return currentProgram;
+    }
+
+
+    @Override
+    public Program visitPrint(MiniJavaGrammarParser.PrintContext ctx) {
+        ctx.expression().accept(this);
+        Exp value = currentExp;
+
+        currentStatement = new Print(value);
+
+        return currentProgram;
     }
 
     @Override
-    public Object visitParExp(MiniJavaGrammarParser.ParExpContext ctx) {
-        return (Exp) ctx.expression().accept(this);
+    public Program visitStatementBlock(MiniJavaGrammarParser.StatementBlockContext ctx) {
+        StatementList stmList = new StatementList();
+
+        for (MiniJavaGrammarParser.StatementContext stmCtx : ctx.statement()) {
+            stmCtx.accept(this);
+            stmList.addElement(currentStatement);
+        }
+
+
+        currentStatement = new Block(stmList);
+
+        return currentProgram;
     }
 
     @Override
-    public Object visitId(MiniJavaGrammarParser.IdContext ctx) {
-        String idStr = ctx.IDENTIFIER().accept(this).toString();
+    public Program visitWhileStatement(MiniJavaGrammarParser.WhileStatementContext ctx) {
+        ctx.expression().accept(this);
+        Exp condition = currentExp;
 
-        Identifier id = new Identifier(idStr);
-        return id;
-    }
+        ctx.statement().accept(this);
+        Statement code = currentStatement;
 
-    @Override
-    public Object visit(ParseTree parseTree) {
-        return parseTree.accept(this);
-    }
+        currentStatement = new While(condition, code);
 
-    @Override
-    public Object visitChildren(RuleNode ruleNode) {
-        return null;
-    }
-
-    @Override
-    public Object visitTerminal(TerminalNode terminalNode) {
-        return terminalNode.getSymbol().getText();
-    }
-
-    @Override
-    public Object visitErrorNode(ErrorNode errorNode) {
-        return null;
+        return currentProgram;
     }
 }

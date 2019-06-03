@@ -41,11 +41,11 @@ public interface MiniJavaGrammarVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitMethodDeclaration(MiniJavaGrammarParser.MethodDeclarationContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link MiniJavaGrammarParser#type}.
+	 * Visit a parse tree produced by {@link MiniJavaGrammarParser#parameterList}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitType(MiniJavaGrammarParser.TypeContext ctx);
+	T visitParameterList(MiniJavaGrammarParser.ParameterListContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link MiniJavaGrammarParser#statement}.
 	 * @param ctx the parse tree
@@ -53,11 +53,11 @@ public interface MiniJavaGrammarVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitStatement(MiniJavaGrammarParser.StatementContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link MiniJavaGrammarParser#bracketStatemet}.
+	 * Visit a parse tree produced by {@link MiniJavaGrammarParser#statementBlock}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitBracketStatemet(MiniJavaGrammarParser.BracketStatemetContext ctx);
+	T visitStatementBlock(MiniJavaGrammarParser.StatementBlockContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link MiniJavaGrammarParser#ifStatement}.
 	 * @param ctx the parse tree
@@ -65,29 +65,29 @@ public interface MiniJavaGrammarVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitIfStatement(MiniJavaGrammarParser.IfStatementContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link MiniJavaGrammarParser#whiletStatement}.
+	 * Visit a parse tree produced by {@link MiniJavaGrammarParser#whileStatement}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitWhiletStatement(MiniJavaGrammarParser.WhiletStatementContext ctx);
+	T visitWhileStatement(MiniJavaGrammarParser.WhileStatementContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link MiniJavaGrammarParser#printStatement}.
+	 * Visit a parse tree produced by {@link MiniJavaGrammarParser#assignment}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitPrintStatement(MiniJavaGrammarParser.PrintStatementContext ctx);
+	T visitAssignment(MiniJavaGrammarParser.AssignmentContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link MiniJavaGrammarParser#assignStatement}.
+	 * Visit a parse tree produced by {@link MiniJavaGrammarParser#print}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitAssignStatement(MiniJavaGrammarParser.AssignStatementContext ctx);
+	T visitPrint(MiniJavaGrammarParser.PrintContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link MiniJavaGrammarParser#arrayAssignStatement}.
+	 * Visit a parse tree produced by {@link MiniJavaGrammarParser#arrayAssignment}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitArrayAssignStatement(MiniJavaGrammarParser.ArrayAssignStatementContext ctx);
+	T visitArrayAssignment(MiniJavaGrammarParser.ArrayAssignmentContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link MiniJavaGrammarParser#expression}.
 	 * @param ctx the parse tree
@@ -95,33 +95,45 @@ public interface MiniJavaGrammarVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitExpression(MiniJavaGrammarParser.ExpressionContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link MiniJavaGrammarParser#newIntExp}.
+	 * Visit a parse tree produced by {@link MiniJavaGrammarParser#parentesis}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitNewIntExp(MiniJavaGrammarParser.NewIntExpContext ctx);
+	T visitParentesis(MiniJavaGrammarParser.ParentesisContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link MiniJavaGrammarParser#newIdExp}.
+	 * Visit a parse tree produced by {@link MiniJavaGrammarParser#parameterListCall}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitNewIdExp(MiniJavaGrammarParser.NewIdExpContext ctx);
+	T visitParameterListCall(MiniJavaGrammarParser.ParameterListCallContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link MiniJavaGrammarParser#notExp}.
+	 * Visit a parse tree produced by {@link MiniJavaGrammarParser#notExpression}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitNotExp(MiniJavaGrammarParser.NotExpContext ctx);
+	T visitNotExpression(MiniJavaGrammarParser.NotExpressionContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link MiniJavaGrammarParser#parExp}.
+	 * Visit a parse tree produced by {@link MiniJavaGrammarParser#objectInstatiation}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitParExp(MiniJavaGrammarParser.ParExpContext ctx);
+	T visitObjectInstatiation(MiniJavaGrammarParser.ObjectInstatiationContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link MiniJavaGrammarParser#id}.
+	 * Visit a parse tree produced by {@link MiniJavaGrammarParser#arrayInstatiation}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitId(MiniJavaGrammarParser.IdContext ctx);
+	T visitArrayInstatiation(MiniJavaGrammarParser.ArrayInstatiationContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link MiniJavaGrammarParser#identifier}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitIdentifier(MiniJavaGrammarParser.IdentifierContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link MiniJavaGrammarParser#type}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitType(MiniJavaGrammarParser.TypeContext ctx);
 }

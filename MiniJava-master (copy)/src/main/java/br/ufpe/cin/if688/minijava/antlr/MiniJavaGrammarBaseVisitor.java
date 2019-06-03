@@ -52,7 +52,7 @@ public class MiniJavaGrammarBaseVisitor<T> extends AbstractParseTreeVisitor<T> i
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitType(MiniJavaGrammarParser.TypeContext ctx) { return visitChildren(ctx); }
+	@Override public T visitParameterList(MiniJavaGrammarParser.ParameterListContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -66,7 +66,7 @@ public class MiniJavaGrammarBaseVisitor<T> extends AbstractParseTreeVisitor<T> i
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitBracketStatemet(MiniJavaGrammarParser.BracketStatemetContext ctx) { return visitChildren(ctx); }
+	@Override public T visitStatementBlock(MiniJavaGrammarParser.StatementBlockContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -80,28 +80,28 @@ public class MiniJavaGrammarBaseVisitor<T> extends AbstractParseTreeVisitor<T> i
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitWhiletStatement(MiniJavaGrammarParser.WhiletStatementContext ctx) { return visitChildren(ctx); }
+	@Override public T visitWhileStatement(MiniJavaGrammarParser.WhileStatementContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitPrintStatement(MiniJavaGrammarParser.PrintStatementContext ctx) { return visitChildren(ctx); }
+	@Override public T visitAssignment(MiniJavaGrammarParser.AssignmentContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitAssignStatement(MiniJavaGrammarParser.AssignStatementContext ctx) { return visitChildren(ctx); }
+	@Override public T visitPrint(MiniJavaGrammarParser.PrintContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitArrayAssignStatement(MiniJavaGrammarParser.ArrayAssignStatementContext ctx) { return visitChildren(ctx); }
+	@Override public T visitArrayAssignment(MiniJavaGrammarParser.ArrayAssignmentContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -115,33 +115,47 @@ public class MiniJavaGrammarBaseVisitor<T> extends AbstractParseTreeVisitor<T> i
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitNewIntExp(MiniJavaGrammarParser.NewIntExpContext ctx) { return visitChildren(ctx); }
+	@Override public T visitParentesis(MiniJavaGrammarParser.ParentesisContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitNewIdExp(MiniJavaGrammarParser.NewIdExpContext ctx) { return visitChildren(ctx); }
+	@Override public T visitParameterListCall(MiniJavaGrammarParser.ParameterListCallContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitNotExp(MiniJavaGrammarParser.NotExpContext ctx) { return visitChildren(ctx); }
+	@Override public T visitNotExpression(MiniJavaGrammarParser.NotExpressionContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitParExp(MiniJavaGrammarParser.ParExpContext ctx) { return visitChildren(ctx); }
+	@Override public T visitObjectInstatiation(MiniJavaGrammarParser.ObjectInstatiationContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitId(MiniJavaGrammarParser.IdContext ctx) { return visitChildren(ctx); }
+	@Override public T visitArrayInstatiation(MiniJavaGrammarParser.ArrayInstatiationContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitIdentifier(MiniJavaGrammarParser.IdentifierContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitType(MiniJavaGrammarParser.TypeContext ctx) { return visitChildren(ctx); }
 }
